@@ -2,7 +2,7 @@ const knex = require('knex')
 const app = require('../src/app')
 const helpers = require('./test-helpers')
 
-describe.only('Things Endpoints', function() {
+describe('Things Endpoints', function() {
   let db
 
   const {
@@ -42,7 +42,7 @@ describe.only('Things Endpoints', function() {
       },
       {
         name: 'GET /api/things/:thing_id/reviews',
-        path: 'api/articles/1/reviews'
+        path: 'api/things/1/reviews'
       }
     ]
 
@@ -142,10 +142,10 @@ describe.only('Things Endpoints', function() {
     })
   })
 
-  describe.only(`GET /api/things/:thing_id`, () => {
+  describe(`GET /api/things/:thing_id`, () => {
     context(`Given no things`, () => {
       beforeEach(() => 
-        db.into('thingful_users').insert(testUsers)
+        helpers.seedUsers(db, testUsers)
       )
       it(`responds with 404`, () => {
         const thingId = 123456
@@ -212,7 +212,7 @@ describe.only('Things Endpoints', function() {
   describe(`GET /api/things/:thing_id/reviews`, () => {
     context(`Given no things`, () => {
       beforeEach(() => 
-        db.into('thingful_users').insert(testUsers)
+        helpers.seedUsers(db, testUsers)
       )
       it(`responds with 404`, () => {
         const thingId = 123456

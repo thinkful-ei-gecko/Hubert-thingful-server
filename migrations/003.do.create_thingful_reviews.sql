@@ -1,4 +1,4 @@
-CREATE TABLE thingful_reviews (
+CREATE TABLE IF NOT EXISTS thingful_reviews (
     id SERIAL PRIMARY KEY,
     text TEXT NOT NULL,
     rating INTEGER NOT NULL,

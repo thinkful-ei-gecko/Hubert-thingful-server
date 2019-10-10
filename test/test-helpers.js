@@ -1,3 +1,5 @@
+const bcrypt = require('bcryptjs');
+
 function makeUsersArray() {
   return [
     {
@@ -33,6 +35,20 @@ function makeUsersArray() {
       date_created: '2029-01-22T16:28:32.615Z',
     },
   ]
+}
+
+function seedUsers(db, users) {
+  const preppedUsers = users.map(user => ({
+    ...user,
+    password: bcrypt.hashSync(user.password, 1)
+  }))
+  return db.into('thingful_users').insert(preppedUsers)
+    .then(() => 
+      db.raw(
+        `SELECT setval('thingful_users_id_seq', ?)`,
+        [users[users.length - 1].id],
+      )
+    )
 }
 
 function makeThingsArray(users) {
@@ -232,8 +248,14 @@ function cleanTables(db) {
 
 function seedThingsTables(db, users, things, reviews=[]) {
   return db
-    .into('thingful_users')
-    .insert(users)
+    .transaction(async trx => {
+      await seedUsers(trx, users)
+      await trx.into('thingful_things').insert(things)
+      await trx.raw(
+        `SELECT setval('thingful_things_id_seq', ?)`,
+        [things[things.length - 1].id],
+      )
+    })
     .then(() =>
       db
         .into('thingful_things')
@@ -245,9 +267,7 @@ function seedThingsTables(db, users, things, reviews=[]) {
 }
 
 function seedMaliciousThing(db, user, thing) {
-  return db
-    .into('thingful_users')
-    .insert([user])
+  return seedUsers(db, [user])
     .then(() =>
       db
         .into('thingful_things')
@@ -272,5 +292,6 @@ module.exports = {
   cleanTables,
   seedThingsTables,
   seedMaliciousThing,
-  makeAuthHeader
+  makeAuthHeader,
+  seedUsers
 }
