@@ -10,7 +10,7 @@ reviewsRouter
   .route('/')
   .post(requireAuth, jsonBodyParser, (req, res, next) => {
     const { thing_id, rating, text } = req.body
-    const newReview = { thing_id, rating, text }
+    const newReview = { thing_id, rating, text, user_id: req.user.id }
 
     for (const [key, value] of Object.entries(newReview))
       if (value == null)

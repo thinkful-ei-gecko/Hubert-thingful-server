@@ -8,6 +8,7 @@ describe('Reviews Endpoints', function() {
   const {
     testThings,
     testUsers,
+    testReviews
   } = helpers.makeThingsFixtures()
 
   before('make knex instance', () => {
@@ -30,6 +31,7 @@ describe('Reviews Endpoints', function() {
         db,
         testUsers,
         testThings,
+        testReviews
       )
     )
 

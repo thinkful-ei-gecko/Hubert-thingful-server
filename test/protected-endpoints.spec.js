@@ -2,7 +2,7 @@ const knex = require('knex')
 const app = require('../src/app')
 const helpers = require('./test-helpers')
 
-describe.only('Protected Endpoints', function() {
+describe('Protected Endpoints', function() {
   let db
 
   const {
@@ -28,8 +28,8 @@ describe.only('Protected Endpoints', function() {
     helpers.seedThingsTables(
       db,
       testUsers,
-      testReviews,
-      testThings
+      testThings,
+      testReviews
     )
   })
 
@@ -55,7 +55,7 @@ describe.only('Protected Endpoints', function() {
       describe(endpoint.name, () => {
         it(`responds with 401 'Missing basic token' when no basic token`, () => {
           return endpoint.method(endpoint.path)
-            .expect(401, { error: `Unauthorized request`})
+            .expect(401, { error: `Missing basic token`})
         })
         it(`responds 401 'Unauthorized request' when no credentials in token`, () => {
           const userNoCreds = { user_name: '', password: '' }
